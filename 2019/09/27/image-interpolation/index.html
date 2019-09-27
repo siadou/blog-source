@@ -1,0 +1,41 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="author" content="lemonkun"><title>常用的图像插值算法 · 绝好调超</title><meta name="description" content="最近看了一篇随机纹理的算法，补充了下图像差值的基础知识。图像插值就是利用已知邻近像素点的灰度值（或rgb图像中的三色值）来产生未知像素点的灰度值，以便由原始图像再生出几何变换之后的图像。
+常见算法1. 最近邻插值法（Nearest Neighbour Interpolation）这是最简单的一种插值"><meta name="keywords" content="前端技术,生活,游戏,动画"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><link rel="short icon" href="/images/favicon.png" type="image/x-icon"><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/blog_basic.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml"></head><body><div class="sidebar animated fadeInDown"><div class="logo-title"><div class="title"><img src="/images/logo@2x.png" style="width:127px;"><h3 title><a href="/">绝好调超</a></h3><div class="description"><p>十分钟热度</p></div></div></div><ul class="social-links"></ul><div class="footer"><a target="_blank" href="/"><span>Theme by </span></a><a href="https://www.caicai.me"> CaiCai </a><span>&</span><a href="https://github.com/Ben02/hexo-theme-Anatole"> Ben</a><div class="by_farbox"><a href="https://hexo.io/zh-cn/" target="_blank">Proudly published with Hexo&#65281;</a></div></div></div><div class="main"><div class="page-top animated fadeInDown"><div class="nav"><li><a href="/">首页</a></li><li><a href="/about">关于</a></li><li><a href="/archives">归档</a></li><li><a href="/links">友链</a></li></div><div class="information"><div class="back_btn"><li><a class="fa fa-chevron-left" onclick="window.history.go(-1)"> </a></li></div><div class="avatar"><img src="https://tvax2.sinaimg.cn/crop.115.16.155.155.180/4a970e85ly8fnyjabf72fj20b408c749.jpg"></div></div></div><div class="autopagerize_page_element"><div class="content"><div class="post-page"><div class="post animated fadeInDown"><div class="post-title"><h3><a>常用的图像插值算法</a></h3></div><div class="post-content"><p>最近看了一篇随机纹理的算法，补充了下图像差值的基础知识。图像插值就是利用已知邻近像素点的灰度值（或rgb图像中的三色值）来产生未知像素点的灰度值，以便由原始图像再生出几何变换之后的图像。</p>
+<h1 id="常见算法"><a href="#常见算法" class="headerlink" title="常见算法"></a>常见算法</h1><h2 id="1-最近邻插值法（Nearest-Neighbour-Interpolation）"><a href="#1-最近邻插值法（Nearest-Neighbour-Interpolation）" class="headerlink" title="1. 最近邻插值法（Nearest Neighbour Interpolation）"></a>1. 最近邻插值法（Nearest Neighbour Interpolation）</h2><p>这是最简单的一种插值方法，在待求象素的四邻象素中，将距离待求象素最近邻的像素灰度赋给待求象素。设为待求象素坐标(x+u,y+v) ，【注：x,y为整数， u，v为大于零小于1的小数】则待求象素灰度的值 f(x+u,y+v)为 ，选取距离插入的像素点（x+u, y+v)最近的一个像素点，用它的像素点的灰度值代替插入的像素点。</p>
+<p>特点：最近邻插值法虽然计算量较小，但可能会造成插值生成的图像灰度上的不连续，在灰度变化的地方可能出现明显的锯齿状。</p>
+<p>三种不同的空间距离：<br>a. 欧式距离：</p>
+<p><img src="/images/image-interpolation/1.webp" alt></p>
+<p>b. D4距离（城市距离）</p>
+<p><img src="/images/image-interpolation/2.webp" alt></p>
+<p>c. D8距离（棋盘距离）</p>
+<p><img src="/images/image-interpolation/3.webp" alt></p>
+<p>一般采用欧式距离。</p>
+<h2 id="2-双线性插值"><a href="#2-双线性插值" class="headerlink" title="2. 双线性插值"></a>2. 双线性插值</h2><p>双线性插值，顾名思义，在像素点矩阵上面，x和y两个方向的线性插值所得的结果。</p>
+<p>对于一维线性插值：</p>
+<p><img src="/images/image-interpolation/4.png" alt></p>
+<p><img src="/images/image-interpolation/5.png" alt></p>
+<p>对于二维图像：</p>
+<p><img src="/images/image-interpolation/6.png" alt></p>
+<p>先在x方向上面线性插值，得到R2、R1像素值：</p>
+<p><img src="/images/image-interpolation/7.png" alt></p>
+<p>然后以R2,R1在y方向上面再次线性插值。</p>
+<p>本质：根据4个近邻像素点的灰度值做2个方向共3次线性插值。</p>
+<p>特点：双线性内插法的计算比最邻近点法复杂，计算量较大，但没有灰度不连续的缺点，结果基本令人满意。它具有低通滤波性质，使高频分量受损，图像轮廓可能会有一点模糊。</p>
+<p><img src="/images/image-interpolation/8.webp" alt></p>
+<h2 id="3-双三次插值"><a href="#3-双三次插值" class="headerlink" title="3. 双三次插值"></a>3. 双三次插值</h2><p>在数值分析这个数学分支中，双三次插值是二维空间中最常用的插值方法。在这种方法中，函数f 在点 (x, y) 的值可以通过矩形网格中最近的十六个采样点的加权平均得到，在这里需要使用两个多项式插值三次函数，每个方向使用一个。两个方向加权相乘。</p>
+<p>特点：三次运算可以得到更接近高分辨率图像的放大效果，但也导致了运算量急速增加。</p>
+<p><img src="/images/image-interpolation/9.png" alt></p>
+<p><img src="/images/image-interpolation/10.png" alt></p>
+<h1 id="附注："><a href="#附注：" class="headerlink" title="附注："></a>附注：</h1><ol>
+<li>参考坐标系问题</li>
+</ol>
+<p>matlab和opencv等以变换后的几何中心重合（并不是以左上角之类的其他点作为变换的原点）。此处应当注意。</p>
+<ol start="2">
+<li>BiCubic函数</li>
+</ol>
+<p><img src="/images/image-interpolation/11.png" alt></p>
+<p>上文中a取-1</p>
+<h1 id="参考文献："><a href="#参考文献：" class="headerlink" title="参考文献："></a>参考文献：</h1><p><a href="https://www.jianshu.com/p/8118e708b766" target="_blank" rel="noopener">https://www.jianshu.com/p/8118e708b766</a></p>
+<p><a href="https://blog.csdn.net/tercel_zhang/article/details/70196057" target="_blank" rel="noopener">https://blog.csdn.net/tercel_zhang/article/details/70196057</a></p>
+<p><a href="https://blog.csdn.net/qq_34885184/article/details/79163991" target="_blank" rel="noopener">https://blog.csdn.net/qq_34885184/article/details/79163991</a></p>
+<p><a href="https://www.jianshu.com/p/dc07ba10854c" target="_blank" rel="noopener">https://www.jianshu.com/p/dc07ba10854c</a></p>
+</div><div class="post-footer"><div class="meta"><div class="info"><i class="fa fa-sun-o"></i><span class="date">2019-09-27</span><i class="fa fa-tag"></i><a class="tag" href="/tags/图像处理/" title="图像处理">图像处理 </a></div></div></div></div><div class="share"><div class="evernote"><a class="fa fa-bookmark" href="javascript:(function(){EN_CLIP_HOST='http://www.evernote.com';try{var%20x=document.createElement('SCRIPT');x.type='text/javascript';x.src=EN_CLIP_HOST+'/public/bookmarkClipper.js?'+(new%20Date().getTime()/100000);document.getElementsByTagName('head')[0].appendChild(x);}catch(e){location.href=EN_CLIP_HOST+'/clip.action?url='+encodeURIComponent(location.href)+'&amp;title='+encodeURIComponent(document.title);}})();" ref="nofollow" target="_blank"></a></div><div class="weibo"><a class="fa fa-weibo" href="javascript:void((function(s,d,e){try{}catch(e){}var f='http://service.weibo.com/share/share.php?',u=d.location.href,p=['url=',e(u),'&amp;title=',e(d.title),'&amp;appkey=2924220432'].join('');function a(){if(!window.open([f,p].join(''),'mb',['toolbar=0,status=0,resizable=1,width=620,height=450,left=',(s.width-620)/2,',top=',(s.height-450)/2].join('')))u.href=[f,p].join('');};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})(screen,document,encodeURIComponent));"></a></div><div class="twitter"><a class="fa fa-twitter" href="http://twitter.com/home?status=,https://www.lemonkun.wang/2019/09/27/image-interpolation/,绝好调超,常用的图像插值算法,;"></a></div></div><div class="pagination"><ul class="clearfix"><li class="next pagbuttons"><a class="btn" role="navigation" href="/2019/09/27/hello-world/" title="Hello World">下一篇</a></li></ul></div></div></div></div></div><script src="/js/jquery.js"></script><script src="/js/jquery-migrate-1.2.1.min.js"></script><script src="/js/jquery.appear.js"></script></body></html>
