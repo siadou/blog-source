@@ -7,9 +7,11 @@
     "deploy": "hexo deploy --generate"
   },
   "hexo": {
-    "version": "3.7.1"
+    "version": "3.9.0"
   },
   "dependencies": {
+    "acorn": "^7.1.0",
+    "eslint": "^6.4.0",
     "hexo": "^3.2.0",
     "hexo-deployer-git": "^0.3.1",
     "hexo-generator-archive": "^0.1.5",
