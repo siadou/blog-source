@@ -1,5 +1,5 @@
 ---
-title: 【翻译】 使用Web Audio创建电话音 
+title: 【译】 使用Web Audio创建电话音 
 date: 2020-07-15 14:57:47
 tags: [前端技术]
 ---
