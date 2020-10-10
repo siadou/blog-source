@@ -87,7 +87,7 @@ var函数的兼容性如下：
 }
 /*利用hsl色彩空间定义不同明度、透明度的颜色*/
 #element2 {
-    background-color: hsla(var(--red-color),50%,0.3);
+    background-color: hsla(var(--hsla-color),50%,0.3);
 }
 ```
 （参考文献1还提供了别的方法，如使用渐变/伪元素叠加带透明度的白色/黑色和基础色等，这里就不多说了。）
@@ -96,7 +96,12 @@ var函数的兼容性如下：
 ```
 handleChangeColor = (color) => {
   let root = document.querySelector(':root')
+
+  let hslcolor = Color("#7743CE").hsl().object();
+  let hslcolor = `${parseInt(hslcolor.h)}, ${parseInt(hslcolor.s)}%`;
+
   root.style.setProperty('--rgb-color',color)
+  root.style.setProperty("--hsla-color", str);
 }
 ```
 通过调整hsl的明度是一种粗糙的方法，相比于这种方法less函数调整出来的结果更细腻灵活。
