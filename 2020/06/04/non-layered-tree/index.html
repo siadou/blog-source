@@ -1,7 +1,7 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="author" content="lemonkun"><title>非层级结构树的布局算法 · 绝好调超</title><meta name="description" content="最近在做一个项目，涉及到树形结构的拓扑展示。最终选用了g6作为绘图框架（参考文献[4]）。
-一般的树形结构布局是采用分层的方式布局，即同一棵树同一层级的元素高度都是相同的。如下图a所示。而下图b所示是一个典型的树形结构布局紧凑树结构，其特点是考虑每个树节点的包围盒，使节点和节点之间的连接更加紧凑，相"><meta name="keywords" content="前端技术,生活,游戏,动画"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><link rel="short icon" href="/images/favicon.png" type="image/x-icon"><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/blog_basic.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml"></head><body><div class="sidebar animated fadeInDown"><div class="logo-title"><div class="title"><img src="/images/logo@2x.png" style="width:127px;"><h3 title><a href="/">绝好调超</a></h3><div class="description"><p>十分钟热度</p></div></div></div><ul class="social-links"></ul><div class="footer"><a target="_blank" href="/"><span>Theme by </span></a><a href="https://www.caicai.me"> CaiCai </a><span>&</span><a href="https://github.com/Ben02/hexo-theme-Anatole"> Ben</a><div class="by_farbox"><a href="https://hexo.io/zh-cn/" target="_blank">Proudly published with Hexo&#65281;</a></div></div></div><div class="main"><div class="page-top animated fadeInDown"><div class="nav"><li><a href="/">首页</a></li><li><a href="/about">关于</a></li><li><a href="/archives">归档</a></li><li><a href="/links">友链</a></li></div><div class="information"><div class="back_btn"><li><a class="fa fa-chevron-left" onclick="window.history.go(-1)"> </a></li></div><div class="avatar"><img src="https://tvax2.sinaimg.cn/crop.115.16.155.155.180/4a970e85ly8fnyjabf72fj20b408c749.jpg"></div></div></div><div class="autopagerize_page_element"><div class="content"><div class="post-page"><div class="post animated fadeInDown"><div class="post-title"><h3><a>非层级结构树的布局算法</a></h3></div><div class="post-content"><p>最近在做一个项目，涉及到树形结构的拓扑展示。最终选用了g6作为绘图框架（参考文献[4]）。</p>
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="author"><title>非层级结构树的布局算法 · 绝好调超</title><meta name="description" content="最近在做一个项目，涉及到树形结构的拓扑展示。最终选用了g6作为绘图框架（参考文献[4]）。
+一般的树形结构布局是采用分层的方式布局，即同一棵树同一层级的元素高度都是相同的。如下图a所示。而下图b所示是一个典型的树形结构布局紧凑树结构，其特点是考虑每个树节点的包围盒，使节点和节点之间的连接更加紧凑，相"><meta name="keywords"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><link rel="short icon" href="/images/favicon.png" type="image/x-icon"><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/blog_basic.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml"><meta name="generator" content="Hexo 5.4.0"></head><body><div class="sidebar animated fadeInDown"><div class="logo-title"><div class="title"><img src="/images/logo@2x.png" style="width:127px;"><h3 title=""><a href="/">绝好调超</a></h3></div></div><ul class="social-links"></ul><div class="footer"><a target="_blank" href="/"><span>Theme by </span></a><a target="_blank" rel="noopener" href="https://www.caicai.me"> CaiCai </a><span>&</span><a target="_blank" rel="noopener" href="https://github.com/Ben02/hexo-theme-Anatole"> Ben</a><div class="by_farbox"><a href="https://hexo.io/zh-cn/" target="_blank">Proudly published with Hexo&#65281;</a></div></div></div><div class="main"><div class="page-top animated fadeInDown"><div class="nav"><li><a href="/">首页</a></li><li><a href="/about">关于</a></li><li><a href="/archives">归档</a></li><li><a href="/links">友链</a></li></div><div class="information"><div class="back_btn"><li><a class="fa fa-chevron-left" onclick="window.history.go(-1)"> </a></li></div><div class="avatar"><img></div></div></div><div class="autopagerize_page_element"><div class="content"><div class="post-page"><div class="post animated fadeInDown"><div class="post-title"><h3><a>非层级结构树的布局算法</a></h3></div><div class="post-content"><p>最近在做一个项目，涉及到树形结构的拓扑展示。最终选用了g6作为绘图框架（参考文献[4]）。</p>
 <p>一般的树形结构布局是采用分层的方式布局，即同一棵树同一层级的元素高度都是相同的。如下图a所示。而下图b所示是一个典型的树形结构布局紧凑树结构，其特点是考虑每个树节点的包围盒，使节点和节点之间的连接更加紧凑，相比于前一种节约了大量的空间。算法时间复杂度为O(n)（多么的神奇）。</p>
-<p><img src="/images/non-layered-tree/layered.png" alt></p>
+<p><img src="/images/non-layered-tree/layered.png"></p>
 <p>如上图所示：左侧，层级树结构布局，右侧，非层级树结构布局（紧凑布局）。</p>
 <p>由于实际布局和紧凑布局有略微的不同，需要自己实现。我便花时间看了下非层级树布局的源代码。以下是我的记录。</p>
 <h1 id="基本条件"><a href="#基本条件" class="headerlink" title="基本条件"></a>基本条件</h1><ol>
@@ -32,12 +32,12 @@
 <p>如果树是水平方向生长，将树垂直方向平移使所有值为正数，y轴方向最小值为0（因为x轴向右生长在初始化的步骤里就已经确定了位置，在计算的时候没有改动）</p>
 <p>如果树是垂直方向生长，则将树水平方向平移最小x值个单位，使所有的x为正数。</p>
 <h1 id="算法核心"><a href="#算法核心" class="headerlink" title="算法核心"></a>算法核心</h1><p><strong>1. 保证同一层级节点不重叠。</strong></p>
-<p><img src="/images/non-layered-tree/child-subtree.png" alt></p>
+<p><img src="/images/non-layered-tree/child-subtree.png"></p>
 <p>本步骤是算法的核心。对树进行后序遍历，从子节点开始向上对子树进行向右平移。</p>
 <p>对同一根节点下面的所有直系子节点的间隔进行遍历，保证直系子节点所在的子树两两互相不重叠：</p>
 <p>如上图所示，对于3号节点和7号节点，需要判断3号节点所在的子树（3,4,6,5）以及7号节点所在的子树（7,8,9）互相不重叠。将问题简化为同一水平线上两棵子树对应的轮廓不重叠，通过比较同一水平的轮廓，得到contour pairs，3-7，7-6，6-8，8-4 ，依次计算每个contour pair保证两两不重叠，如重叠，则将右侧节点对应的子树整体偏移重叠部分的宽度即可。</p>
 <p><strong>2. 轮廓的计算</strong></p>
-<p><img src="/images/non-layered-tree/contour.png" alt></p>
+<p><img src="/images/non-layered-tree/contour.png"></p>
 <p>为了判断子树是否重叠，我们需要对每棵树的子节点进行遍历计算树的轮廓。如果直接遍历，时间复杂度为O(n^2)。Reingold and Tilford 提出了一个Thread算法对这个地方做了优化。在计算是否重叠的过程中顺带计算了轮廓。</p>
 <p>首先考虑层级树的情况，如图所示，实线表示节点之间的父子关系，虚线表示轮廓。</p>
 <p>对于包含字节点的树，我们可知其下一层的左轮廓为其子节点第一个节点，右轮廓为其子节点最后一个节点。</p>
@@ -46,11 +46,11 @@
 <p>在比较节点4和节点5分别构成的子树时，我们可知节点5所在的子树比节点4要更深（右子树深于左子树），我们记录节点5下一层的左轮廓为ri，右轮廓为ro，此时我们将节点4设置指针指向节点5下一层的树形结构的左轮廓。</p>
 <p>同理，针对节点2和节点3分别构成的子树，节点2构成的树深度要比节点3的要高，（左子树深于右子树），我们将节点3设置指针指向节点2下一层的右轮廓，即节点5。</p>
 <p>这样在顶层父节点需要获得轮廓计算是否重叠的时候我们就能方便地获得轮廓的链表。而且避免了对每棵树的子节点进行遍历。</p>
-<p><img src="/images/non-layered-tree/non-layered-contour.png" alt></p>
+<p><img src="/images/non-layered-tree/non-layered-contour.png"></p>
 <p>同理，非层级树的计算方法和本方法基本一致，只不过针对的不是下一层的右轮廓，是更深一层节点的右轮廓（可能并非一层）。只需要多进行一次轮廓的最低点比较即可。</p>
 <p>当计算节点2左侧的兄弟节点子树与3节点所对应的子树是否重叠的时候，构造了一个左兄弟的查找链表，来记录从最左边到最右边递减的bottom，即左侧兄弟节点子树的外轮廓。如果能保证与外轮廓不重叠，即可保证和左侧兄弟节点构成的子树集合不重叠。</p>
 <p><strong>3. 布局优化</strong></p>
-<p><img src="/images/non-layered-tree/seperate.png" alt></p>
+<p><img src="/images/non-layered-tree/seperate.png"></p>
 <p>优化布局，如上图所示，将节点5按照节点6的位置向右偏移后，节点1-节点4中间的距离很小，节点4-节点5之间的距离很大。此时出于布局美观的考虑将偏移距离d平均分布到在节点1-节点5上。即节点2偏移距离为1/4d，节点3偏移距离2/4d，节点4偏移距离3/4d。</p>
 <p>每次向右移动子树，需要判断是否需要向右平移左侧子兄弟构成的子树。如果向右移动兄弟子树会和当前子树冲突，则不可移动。以下是这样考虑这个问题的：</p>
 <ul>
@@ -61,15 +61,15 @@
 <p>此步骤同样可以在firstWalk里实现，不需要另外对树进行额外的比那里。只需要计算的时候保留同层兄弟节点轮廓链表，记录左侧兄弟所有以子树（已经布局完成的子树）构成的轮廓最低点以及兄弟节点的索引。</p>
 <p>在比较同一深度是否需要向右平移当前子树时，如果需要平移，再将平移距离平均分配到其他兄弟节点，即可实现。</p>
 <p><strong>4. 整体流程如下：</strong></p>
-<p><img src="/images/non-layered-tree/step1.png" alt></p>
+<p><img src="/images/non-layered-tree/step1.png"></p>
 <p>原始树结构</p>
-<p><img src="/images/non-layered-tree/step2.png" alt></p>
+<p><img src="/images/non-layered-tree/step2.png"></p>
 <p>平移第一次树结构</p>
-<p><img src="/images/non-layered-tree/step1.png" alt></p>
+<p><img src="/images/non-layered-tree/step1.png"></p>
 <p>平均分配距离后的树结构</p>
-<p><img src="/images/non-layered-tree/step2.png" alt></p>
+<p><img src="/images/non-layered-tree/step2.png"></p>
 <p>平移第二次树结构</p>
-<p><img src="/images/non-layered-tree/step1.png" alt></p>
+<p><img src="/images/non-layered-tree/step1.png"></p>
 <p>平均分配距离后的树结构</p>
 <h1 id="降低算法时间复杂度核心思想"><a href="#降低算法时间复杂度核心思想" class="headerlink" title="降低算法时间复杂度核心思想"></a>降低算法时间复杂度核心思想</h1><ol>
 <li>只记录节点偏移量，不记录偏移总量。<br>每次移动整棵子树的位置的时候，为了降低时间复杂度没有通过遍历树的每一个节点计算历次偏总和实现。</li>
@@ -87,7 +87,7 @@
 <p>以上已经对这个问题进行完整的叙述，不再讨论。</p>
 <p>整体来讲，算法的中心思想只看代码理解起来还是比较困难，建议参考相关论文，从分层树结构布局开始再（参考文献 [3]）引申到无分层树结构布局（参考文献 [1]）。<br>本算法的详细实现请参考参考文献2。本文就不贴伪代码了。</p>
 <h1 id="最终的小应用"><a href="#最终的小应用" class="headerlink" title="最终的小应用"></a>最终的小应用</h1><p>产品要求实现的功能是如图所示的拓扑型结构图，节点主要分为主节点和从节点两种。从节点没有子节点，位置需要摆放在主节点的右侧，如下图所示。</p>
-<p><img src="/images/non-layered-tree/pm.png" alt></p>
+<p><img src="/images/non-layered-tree/pm.png"></p>
 <p>布局方面其实不使用非层级树布局这么麻烦的算法也是没有问题的，但是G6没有提供布局方法，我只能在大概理解算法思路之后直接在已有布局上修改代码的方法完成。实际上我在完成这个功能的时候也没有对非层级树布局算法理解这么深入。</p>
 <p>思路也很简单粗暴：</p>
 <ol>
@@ -96,8 +96,8 @@
 <li>在还原子树的时候，根据主节点的位置计算从节点的位置，补充到树形结构上。</li>
 </ol>
 <p>以上三步完成之后，块的布局就完成了。然而最终的布局除了点还需要考虑边的形状，边上文字的排列等等。比如当时一个花了一段时间解决的问题就是这样的：G6默认提供的贝塞尔曲线分为水平方向(cubic-horizontal)和垂直方向(cubic-vertical)两种，实际布局带有从节点的需要水平方向贝塞尔曲线，只有主节点的布局需要垂直方向贝塞尔曲线。需要自己根据线的起点和终点判断（且由于树形结构不包含线的设置，此部分最终是在线的模型函数里判断的）。<br>以上。</p>
-<p>参考文献：<br>[1] <a href="http://emr.cs.iit.edu/~reingold/tidier-drawings.pdf" target="_blank" rel="noopener">http://emr.cs.iit.edu/~reingold/tidier-drawings.pdf</a></p>
-<p>[2] non-layered-tidy.js <a href="https://github.com/antvis/hierarchy/blob/master/src/layout/non-layered-tidy.js" target="_blank" rel="noopener">https://github.com/antvis/hierarchy/blob/master/src/layout/non-layered-tidy.js</a></p>
-<p>[3] Drawing Presentable Trees<br> <a href="https://llimllib.github.io/pymag-trees/" target="_blank" rel="noopener">https://llimllib.github.io/pymag-trees/</a></p>
-<p>[4] G6 Documents <a href="https://g6.antv.vision/zh/docs/manual/introduction" target="_blank" rel="noopener">https://g6.antv.vision/zh/docs/manual/introduction</a></p>
-</div><div class="post-footer"><div class="meta"><div class="info"><i class="fa fa-sun-o"></i><span class="date">2020-06-04</span><i class="fa fa-tag"></i><a class="tag" href="/tags/算法/" title="算法">算法 </a></div></div></div></div><div class="share"><div class="evernote"><a class="fa fa-bookmark" href="javascript:(function(){EN_CLIP_HOST='http://www.evernote.com';try{var%20x=document.createElement('SCRIPT');x.type='text/javascript';x.src=EN_CLIP_HOST+'/public/bookmarkClipper.js?'+(new%20Date().getTime()/100000);document.getElementsByTagName('head')[0].appendChild(x);}catch(e){location.href=EN_CLIP_HOST+'/clip.action?url='+encodeURIComponent(location.href)+'&amp;title='+encodeURIComponent(document.title);}})();" ref="nofollow" target="_blank"></a></div><div class="weibo"><a class="fa fa-weibo" href="javascript:void((function(s,d,e){try{}catch(e){}var f='http://service.weibo.com/share/share.php?',u=d.location.href,p=['url=',e(u),'&amp;title=',e(d.title),'&amp;appkey=2924220432'].join('');function a(){if(!window.open([f,p].join(''),'mb',['toolbar=0,status=0,resizable=1,width=620,height=450,left=',(s.width-620)/2,',top=',(s.height-450)/2].join('')))u.href=[f,p].join('');};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})(screen,document,encodeURIComponent));"></a></div><div class="twitter"><a class="fa fa-twitter" href="http://twitter.com/home?status=,https://www.lemonkun.wang/2020/06/04/non-layered-tree/,绝好调超,非层级结构树的布局算法,;"></a></div></div><div class="pagination"><ul class="clearfix"><li class="pre pagbuttons"><a class="btn" role="navigation" href="/2020/07/15/audio-context/" title="【译】 使用Web Audio创建电话音">上一篇</a></li><li class="next pagbuttons"><a class="btn" role="navigation" href="/2020/06/03/sip/" title="SIP.js实现Web电话">下一篇</a></li></ul></div></div></div></div></div><script src="/js/jquery.js"></script><script src="/js/jquery-migrate-1.2.1.min.js"></script><script src="/js/jquery.appear.js"></script></body></html>
+<p>参考文献：<br>[1] <a target="_blank" rel="noopener" href="http://emr.cs.iit.edu/~reingold/tidier-drawings.pdf">http://emr.cs.iit.edu/~reingold/tidier-drawings.pdf</a></p>
+<p>[2] non-layered-tidy.js <a target="_blank" rel="noopener" href="https://github.com/antvis/hierarchy/blob/master/src/layout/non-layered-tidy.js">https://github.com/antvis/hierarchy/blob/master/src/layout/non-layered-tidy.js</a></p>
+<p>[3] Drawing Presentable Trees<br> <a target="_blank" rel="noopener" href="https://llimllib.github.io/pymag-trees/">https://llimllib.github.io/pymag-trees/</a></p>
+<p>[4] G6 Documents <a target="_blank" rel="noopener" href="https://g6.antv.vision/zh/docs/manual/introduction">https://g6.antv.vision/zh/docs/manual/introduction</a></p>
+</div><div class="post-footer"><div class="meta"><div class="info"><i class="fa fa-sun-o"></i><span class="date">2020-06-04</span><i class="fa fa-tag"></i><a class="tag" href="/tags/算法/" title="算法">算法 </a></div></div></div></div><div class="share"><div class="evernote"><a class="fa fa-bookmark" href="javascript:(function(){EN_CLIP_HOST='http://www.evernote.com';try{var%20x=document.createElement('SCRIPT');x.type='text/javascript';x.src=EN_CLIP_HOST+'/public/bookmarkClipper.js?'+(new%20Date().getTime()/100000);document.getElementsByTagName('head')[0].appendChild(x);}catch(e){location.href=EN_CLIP_HOST+'/clip.action?url='+encodeURIComponent(location.href)+'&amp;title='+encodeURIComponent(document.title);}})();" ref="nofollow" target="_blank"></a></div><div class="weibo"><a class="fa fa-weibo" href="javascript:void((function(s,d,e){try{}catch(e){}var f='http://service.weibo.com/share/share.php?',u=d.location.href,p=['url=',e(u),'&amp;title=',e(d.title),'&amp;appkey=2924220432'].join('');function a(){if(!window.open([f,p].join(''),'mb',['toolbar=0,status=0,resizable=1,width=620,height=450,left=',(s.width-620)/2,',top=',(s.height-450)/2].join('')))u.href=[f,p].join('');};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})(screen,document,encodeURIComponent));"></a></div><div class="twitter"><a class="fa fa-twitter" target="_blank" rel="noopener" href="http://twitter.com/home?status=,https://www.lemonkun.wang/2020/06/04/non-layered-tree/,绝好调超,非层级结构树的布局算法,;"></a></div></div><div class="pagination"><ul class="clearfix"><li class="pre pagbuttons"><a class="btn" role="navigation" href="/2020/07/15/audio-context/" title="【译】 使用Web Audio创建电话音">上一篇</a></li><li class="next pagbuttons"><a class="btn" role="navigation" href="/2020/06/03/sip/" title="SIP.js实现Web电话">下一篇</a></li></ul></div></div></div></div></div><script src="/js/jquery.js"></script><script src="/js/jquery-migrate-1.2.1.min.js"></script><script src="/js/jquery.appear.js"></script></body></html>
