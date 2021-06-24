@@ -1,7 +1,7 @@
 ---
 title: 无头浏览器初探
 date: 2018-08-30 15:00:39
-tags: 前端技术
+tags: [前端技术, Headless-Chrome, Puppeter]
 ---
 无头浏览器是浏览器一种新模式，该模式下用户可以完全通过命令行运行浏览器。前端早期对headless的支持实现是PhantomJS和selenium-webdriver，2017年谷歌宣布推出Chrome headless模式和Puppeteer，随后PhantomJS 和 Selenium IDE for Firefox 作者宣布停止维护各自的项目。（内心OS： 你叫我们和人家专业做浏览器的怎么比。。。。。）Chrome 从 v59开始支持无头模式。支持所有Chromium和Blink的所有功能。无头浏览器在自动化测试、页面爬虫、批量截图、检测网络性能等领域都有广泛的应用。
 
@@ -74,7 +74,7 @@ $ npm i puppeteer
 
 ## 实验开始
 
-为了体验puppeteer的功能，写了个简单的脚本，实现某discuz论坛的自动签到。
+为了体验puppeteer的功能，我写了个简单的脚本，实现了某discuz论坛的自动签到功能。
 
 ```javascript
 const puppeteer = require('puppeteer');

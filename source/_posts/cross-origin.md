@@ -1,7 +1,7 @@
 ---
 title: HTML标签的crossorigin属性
 date: 2020-08-14 09:59:09
-tags:
+tags: [前端技术, 浏览器]
 ---
 
 # 范围

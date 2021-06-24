@@ -1,7 +1,7 @@
 ---
 title: Chrome 自动播放策略
 date: 2020-08-04 15:05:59
-tags:
+tags: [前端技术, 浏览器]
 ---
 
 最近实现了一个在网页上特定网络事件触发播放音频功能，一定情况下会失效控制台会报错，发现是由于Chrome不支持无互动播放有声音频导致的。考虑到斗鱼等网站没有互动自动播放视频，我查看了相关的功能说明并对此进行了一点点研究。以下是我的记录。
@@ -61,7 +61,8 @@ Warning: Older articles incorrectly recommend using the attribute gesture=media 
 # Web开发人员的最佳实践
 
 ## 音频/视频元素
-记住：永远不要假设视频会播放，并且在视频未实际播放时也不要显示暂停按钮。
+
+注意：不要默认假设视频会播放，并在视频未播放时显示暂停按钮。
 
 通过调用Play得到Promise的返回结果可以知道播放是否被rejected:
 
@@ -125,7 +126,7 @@ document.querySelector('button').addEventListener('click', function() {
 });
 ```
 
-为了检测浏览器是否需要用户交互才可以播放音频，你可以检查AudioContext的state。如果允许播放，则状态会立即切换到running。否则将是suspended。如果您监听statechange事件，则可以异步检测更改。
+为了检测浏览器是否需要用户交互才可以播放音频，可以检查AudioContext的state。如果允许播放，则状态会立即切换到running。否则将是suspended。如果您监听statechange事件，则可以异步检测更改。
 
 # 其他网站实践
 
