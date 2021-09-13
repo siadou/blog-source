@@ -1191,9 +1191,9 @@ hexo@^5.4.0:
     warehouse "^4.0.0"
 
 highlight.js@^10.0.0:
-  version "10.7.2"
-  resolved "https://registry.npm.taobao.org/highlight.js/download/highlight.js-10.7.2.tgz#89319b861edc66c48854ed1e6da21ea89f847360"
-  integrity sha1-iTGbhh7cZsSIVO0ebaIeqJ+Ec2A=
+  version "10.7.3"
+  resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-10.7.3.tgz#697272e3991356e40c3cac566a74eef681756531"
+  integrity sha512-tzcUFauisWKNHaRkN4Wjl/ZA07gENAjFl3J/c480dprkGTg5EQstgaNFqBfUqCq54kZRIEcreTsAgF/m2quD7A==
 
 htmlparser2@^4.0.0:
   version "4.1.0"
