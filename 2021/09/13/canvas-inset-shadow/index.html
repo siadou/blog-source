@@ -1,0 +1,100 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="author"><title>Canvas绘制中的内外阴影还原问题 · 绝好调超</title><meta name="description" content="canvas阴影相关的属性canvas一般通过以下三个属性控制阴影：
+
+
+
+属性
+描述
+
+
+
+shadowColor
+设置或返回用于阴影的颜色
+
+
+shadowBlur
+设置或返回用于阴影的模糊级别
+
+
+shadowOffsetX
+设置或返回阴影与形状的水平距离
+
+
+shadowOffsetY
+设置"><meta name="keywords"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><link rel="short icon" href="/images/favicon.png" type="image/x-icon"><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/blog_basic.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml"><meta name="generator" content="Hexo 5.4.0"></head><body><div class="sidebar animated fadeInDown"><div class="logo-title"><div class="title"><img src="/images/logo@2x.png" style="width:127px;"><h3 title=""><a href="/">绝好调超</a></h3></div></div><ul class="social-links"></ul><div class="footer"><a target="_blank" href="/"><span>Theme by </span></a><a target="_blank" rel="noopener" href="https://www.caicai.me"> CaiCai </a><span>&</span><a target="_blank" rel="noopener" href="https://github.com/Ben02/hexo-theme-Anatole"> Ben</a><div class="by_farbox"><a href="https://hexo.io/zh-cn/" target="_blank">Proudly published with Hexo&#65281;</a></div></div></div><div class="main"><div class="page-top animated fadeInDown"><div class="nav"><li><a href="/">首页</a></li><li><a href="/about">关于</a></li><li><a href="/archives">归档</a></li><li><a href="/links">友链</a></li></div><div class="information"><div class="back_btn"><li><a class="fa fa-chevron-left" onclick="window.history.go(-1)"> </a></li></div><div class="avatar"><img></div></div></div><div class="autopagerize_page_element"><div class="content"><div class="post-page"><div class="post animated fadeInDown"><div class="post-title"><h3><a>Canvas绘制中的内外阴影还原问题</a></h3></div><div class="post-content"><h2 id="canvas阴影相关的属性"><a href="#canvas阴影相关的属性" class="headerlink" title="canvas阴影相关的属性"></a>canvas阴影相关的属性</h2><p>canvas一般通过以下三个属性控制阴影：</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>shadowColor</td>
+<td>设置或返回用于阴影的颜色</td>
+</tr>
+<tr>
+<td>shadowBlur</td>
+<td>设置或返回用于阴影的模糊级别</td>
+</tr>
+<tr>
+<td>shadowOffsetX</td>
+<td>设置或返回阴影与形状的水平距离</td>
+</tr>
+<tr>
+<td>shadowOffsetY</td>
+<td>设置或返回阴影与形状的垂直距离</td>
+</tr>
+</tbody></table>
+<p>相比于CSS，canvas的阴影少了两个参数，一个spread参数用于控制阴影的扩散大小，一个inset参数用于控制阴影是内阴影还是外阴影。</p>
+<p>CSS阴影的整体覆盖区域的大小相当于原始元素的borrder-box 大小并增加了spread距离 + blur距离 / 2。参考文献[CSS Backgrounds and Borders Module Level 3]</p>
+<p>Canvas的阴影整体的覆盖区域只增加了blur距离/2。没有spread距离。（除此以外，阴影算法指定了2D Gaussian Blur，shadowBlur / 2作为标准差。而HTML规范里未指定算法）。</p>
+<p>除了参数以外，由于canvas不区分内阴影和外阴影，canvas阴影效果会受到fillColor透明度的影响，但是CSS的阴影不会受到background-color的影响。原因在于canvas在绘制阴影的时候会考虑到绘制图形已经完成部分的alpha通道，但是css阴影的box-shadow不会考虑填充颜色。（补充photoshop：photoshop的阴影区分外阴影和内阴影。设置透明填充后不会因为设置外阴影影响已绘制图形内部表现。然而如果通过设置图层透明度实现透明填充会影响阴影透明度。这和css采用opacity控制透明度表现一致。）</p>
+<p>实际应用时，参考文献3的作者发现Canvas的阴影受到绘图时原图像大小的影响。原图像很小的时候阴影会变浅。这点CSS和canvas表现一直。这是由于对原图形的大小小于高斯模糊的范围，不同像素叠加在一起会使阴影变透明。理论上来讲，只要绘制的图形大小远大于blur距离，绘制的阴影就不会受到图形的影响变浅。</p>
+<p>如下代码所示，实际画图中忽略spread，在未设置透明度的时候利用canvas画出的阴影和css画出的阴影效果是一样的。</p>
+<p class="codepen" data-height="300" data-default-tab="html,result" data-slug-hash="mdwWYER" data-user="siadou" style="height: 300px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;">
+  <span>See the Pen <a target="_blank" rel="noopener" href="https://codepen.io/siadou/pen/mdwWYER">
+  Canvas shadow vs CSS shadow</a> by siadou (<a target="_blank" rel="noopener" href="https://codepen.io/siadou">@siadou</a>)
+  on <a target="_blank" rel="noopener" href="https://codepen.io">CodePen</a>.</span>
+</p>
+<script async src="https://cpwebassets.codepen.io/assets/embed/ei.js"></script>
+
+<h2 id="canvas实现css的阴影spread"><a href="#canvas实现css的阴影spread" class="headerlink" title="canvas实现css的阴影spread"></a>canvas实现css的阴影spread</h2><p>由上可知，CSS的阴影的spread是在原图形的外侧补一圈扩散半径。可以在绘制规则图形时增加半径，通过设置偏移量将box移出画布，仅保留阴影。再将阴影绘制到需要的位置即可。</p>
+<p>参考figma工程师发表的[Behind the feature: shedding light on shadow spread]这篇文章，这篇文章在采用何种方法进行模拟边界扩展的时候提出了两种方案，比如是简单的对原图形进行拉伸还是生成一个更大的图形。（作者测试各种不同的box形状后得出结论：有一些实现缺乏标准，还有一些浏览器对于box-shadow一些实现的方案也不符合W3C标准，捂脸）参考现有CSS的实现我们可以得到一些图形的简单模拟：</p>
+<p>矩形：圆角矩形<br>椭圆形：在原来椭圆形的基础上增加长轴短轴<br>圆形：一个更大的圆形</p>
+<blockquote>
+<p>考虑到canvas阴影受到原图alpha通道的影响，此方法仅对内部透明一致的图形适用。</p>
+</blockquote>
+<h2 id="canvas内阴影的实现"><a href="#canvas内阴影的实现" class="headerlink" title="canvas内阴影的实现"></a>canvas内阴影的实现</h2><p>以下是一种内阴影的实现办法，首先需要画一个很粗的矩形边框加阴影，然后通过pathClip切除不需要的部分实现。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">function rectInnerShadow (ctx, x, y, w, h, shadowColor, shadowBlur, lineWidth) &#123;</span><br><span class="line">  shadowColor &#x3D; shadowColor || &#39;#00f&#39; &#x2F;&#x2F; 阴影颜色</span><br><span class="line">  lineWidth &#x3D; lineWidth || 20 &#x2F;&#x2F; 边框越大，阴影越清晰</span><br><span class="line">  shadowBlur &#x3D; shadowBlur || 30 &#x2F;&#x2F; 模糊级别，越大越模糊，阴影范围也越大，注意shadowBlur越大，lineWidth也要相应增大。</span><br><span class="line"></span><br><span class="line">  ctx.save()</span><br><span class="line">  ctx.beginPath()</span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F; 裁剪区(只保留内部阴影部分)</span><br><span class="line">  ctx.rect(x, y, w, h)</span><br><span class="line">  ctx.clip()</span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F; 边框+阴影</span><br><span class="line">  ctx.beginPath()</span><br><span class="line">  ctx.lineWidth &#x3D; lineWidth</span><br><span class="line">  ctx.shadowColor &#x3D; shadowColor</span><br><span class="line">  ctx.shadowBlur &#x3D; shadowBlur</span><br><span class="line">  &#x2F;&#x2F; 因线是由坐标位置向两则画的，所以要移动起点坐标位置，和加大矩形。</span><br><span class="line">  &#x2F;&#x2F; ctx.strokeRect(x - lineWidth &#x2F; 2, y - lineWidth &#x2F; 2, w + lineWidth, h + lineWidth)</span><br><span class="line">  ctx.strokeRect(x - lineWidth &#x2F; 2, y - lineWidth &#x2F; 2, +w + lineWidth, +h + lineWidth)</span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F; 取消阴影</span><br><span class="line">  ctx.shadowBlur &#x3D; 0</span><br><span class="line"></span><br><span class="line">  ctx.restore()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>另一种通过混合模式实现。首先新建一个画布，用黑色像素在’source-out’模式下完成内外阴影的绘制，之后通过’source-in’混合模式叠加阴影颜色完成阴影的上色。最后叠加到已有的画布上即可。（如果想实现内外阴影，将’source-out’混合模式改成’xor’即可。）</p>
+<p>绘制带阴影的填充/描边实际相当于2个步骤，第一个步骤先根据图形计算阴影绘制阴影层，之后再绘制图形层。所以对填充之前设置混合模式会影响阴影绘制的结果。</p>
+<blockquote>
+<p>利用混合模式实现内阴影必须保证阴影在新的画布上绘制，再将阴影重新绘制到之前的图形画布上，否则会影响之前的画布上已有的图形。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">const width &#x3D; 100 * devicePixelRatio;</span><br><span class="line">const height &#x3D; 100 * devicePixelRatio;</span><br><span class="line">&#x2F;&#x2F; original canvas</span><br><span class="line">const c &#x3D; document.getElementById(&#39;canvas&#39;);</span><br><span class="line">c.width &#x3D; 300 * devicePixelRatio;&#x2F;* w ww. d e  m  o 2s  .  c o m*&#x2F;</span><br><span class="line">c.height &#x3D; 300 * devicePixelRatio;</span><br><span class="line">c.style.width &#x3D; &#39;300px&#39;;</span><br><span class="line">c.style.height &#x3D; &#39;300px&#39;;</span><br><span class="line">const cctx &#x3D; c.getContext(&#39;2d&#39;);</span><br><span class="line">cctx.fillStyle &#x3D; &#39;rgb(20,205,75)&#39;;</span><br><span class="line">cctx.arc(150 * devicePixelRatio, 150 * devicePixelRatio, 50 * devicePixelRatio, 0, Math.PI * 2);</span><br><span class="line">cctx.fill();</span><br><span class="line">&#x2F;&#x2F; temporary canvas</span><br><span class="line">const canvas &#x3D; document.createElement(&#39;canvas&#39;);</span><br><span class="line">canvas.width &#x3D; width;</span><br><span class="line">canvas.height &#x3D; height;</span><br><span class="line">canvas.style.width &#x3D; &#96;$&#123;width &#x2F; devicePixelRatio&#125;px&#96;;</span><br><span class="line">canvas.style.height &#x3D; &#96;$&#123;height &#x2F; devicePixelRatio&#125;px&#96;;</span><br><span class="line">document.body.appendChild(canvas);</span><br><span class="line">var ctx &#x3D; canvas.getContext(&#39;2d&#39;);</span><br><span class="line">&#x2F;&#x2F; original object on temporary canvas</span><br><span class="line">&#x2F;*</span><br><span class="line">ctx.arc(50 * devicePixelRatio, 50 * devicePixelRatio, 50 * devicePixelRatio, 0, Math.PI * 2);</span><br><span class="line">ctx.fill();</span><br><span class="line"></span><br><span class="line">*&#x2F;</span><br><span class="line">ctx.globalCompositeOperation &#x3D; &#39;source-out&#39;;</span><br><span class="line">&#x2F;*</span><br><span class="line">ctx.arc(50 * devicePixelRatio, 50 * devicePixelRatio, 50 * devicePixelRatio, 0, Math.PI * 2);</span><br><span class="line">ctx.fill();</span><br><span class="line">*&#x2F;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; shadow props</span><br><span class="line">ctx.shadowBlur &#x3D; 20;</span><br><span class="line">ctx.shadowOffsetX &#x3D; 0;</span><br><span class="line">ctx.shadowOffsetY &#x3D; 0;</span><br><span class="line">ctx.shadowColor &#x3D; &#39;#000&#39;;</span><br><span class="line">ctx.arc(50 * devicePixelRatio, 50 * devicePixelRatio, 50 * devicePixelRatio, 0, Math.PI * 2);</span><br><span class="line">ctx.fill();</span><br><span class="line">&#x2F;&#x2F; shadow cutting</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; shadow color</span><br><span class="line">ctx.globalCompositeOperation &#x3D; &#39;source-in&#39;;</span><br><span class="line">ctx.fillStyle &#x3D; &#39;blue&#39;;</span><br><span class="line">ctx.fillRect(0, 0, canvas.width, canvas.height);</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; object cutting</span><br><span class="line">&#x2F;*</span><br><span class="line">ctx.globalCompositeOperation &#x3D; &#39;destination-in&#39;;</span><br><span class="line">ctx.arc(50 * devicePixelRatio, 50 * devicePixelRatio, 50 * devicePixelRatio, 0, Math.PI * 2);</span><br><span class="line">ctx.fill();</span><br><span class="line">*&#x2F;</span><br><span class="line">&#x2F;&#x2F; shadow opacity</span><br><span class="line">cctx.globalAlpha &#x3D; .4;</span><br><span class="line">&#x2F;&#x2F; inserting shadow into original canvas</span><br><span class="line">cctx.drawImage(canvas, 100* devicePixelRatio, 100* devicePixelRatio);</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li><p><a target="_blank" rel="noopener" href="https://www.w3.org/TR/css-backgrounds-3/#box-shadow">CSS Backgrounds and Borders Module Level 3</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://html.spec.whatwg.org/multipage/canvas.html#shadows">HTML Standard (HTML)# dom-context-2d-shadowblur-dev</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/60656468/is-there-something-of-canvas-shadow-properties-like-the-spread-property-of-css">Is there something of CANVAS shadow properties like the “spread” property of CSS box-shadow?</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.figma.com/blog/behind-the-feature-shadow-spread/">Behind the feature: shedding light on shadow spread</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="http://www.yanghuiqing.com/web/352">canvas中常见问题的解决方法及分析，踩坑填坑经历</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.demo2s.com/javascript/javascript-canvas-inset-shadow-on-html5-canvas-image.html">Javascript Canvas Inset-shadow on HTML5 canvas image</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/29393591/how-to-make-a-shadow-in-html-canvas">how to make a shadow in HTML canvas</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.html5rocks.com/zh/tutorials/canvas/texteffects/#toc-spaceage">画布的排版效果</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation">CanvasRenderingContext2D.globalCompositeOperation</a></p>
+</li>
+</ol>
+</div><div class="post-footer"><div class="meta"><div class="info"><i class="fa fa-sun-o"></i><span class="date">2021-09-13</span><i class="fa fa-tag"></i><a class="tag" href="/tags/前端技术/" title="前端技术">前端技术 </a><a class="tag" href="/tags/Canvas/" title="Canvas">Canvas </a></div></div></div></div><div class="share"><div class="evernote"><a class="fa fa-bookmark" href="javascript:(function(){EN_CLIP_HOST='http://www.evernote.com';try{var%20x=document.createElement('SCRIPT');x.type='text/javascript';x.src=EN_CLIP_HOST+'/public/bookmarkClipper.js?'+(new%20Date().getTime()/100000);document.getElementsByTagName('head')[0].appendChild(x);}catch(e){location.href=EN_CLIP_HOST+'/clip.action?url='+encodeURIComponent(location.href)+'&amp;title='+encodeURIComponent(document.title);}})();" ref="nofollow" target="_blank"></a></div><div class="weibo"><a class="fa fa-weibo" href="javascript:void((function(s,d,e){try{}catch(e){}var f='http://service.weibo.com/share/share.php?',u=d.location.href,p=['url=',e(u),'&amp;title=',e(d.title),'&amp;appkey=2924220432'].join('');function a(){if(!window.open([f,p].join(''),'mb',['toolbar=0,status=0,resizable=1,width=620,height=450,left=',(s.width-620)/2,',top=',(s.height-450)/2].join('')))u.href=[f,p].join('');};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})(screen,document,encodeURIComponent));"></a></div><div class="twitter"><a class="fa fa-twitter" target="_blank" rel="noopener" href="http://twitter.com/home?status=,https://www.lemonkun.wang/2021/09/13/canvas-inset-shadow/,绝好调超,Canvas绘制中的内外阴影还原问题,;"></a></div></div><div class="pagination"><ul class="clearfix"><li class="pre pagbuttons"><a class="btn" role="navigation" href="/2021/09/17/axios/" title="axios源码笔记">上一篇</a></li><li class="next pagbuttons"><a class="btn" role="navigation" href="/2021/06/24/vue-acceleration/" title="vue项目性能优化笔记">下一篇</a></li></ul></div></div></div></div></div><script src="/js/jquery.js"></script><script src="/js/jquery-migrate-1.2.1.min.js"></script><script src="/js/jquery.appear.js"></script></body></html>
